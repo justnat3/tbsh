@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-# tbsh
-Typed-Bash-Shell
-=======
+
 # TBSH - Typed Bash Shell
 
 ## The idea:
@@ -33,4 +30,4 @@ Typed-Bash-Shell
     ],
 )
 ```
->>>>>>> added lexing, starting on parsing. figuring out project structure.
+
