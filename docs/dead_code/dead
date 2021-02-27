@@ -1,0 +1,104 @@
+// // ;, :, (, ), {, }, [, ], ?, !, ',', .,
+// pub enum TokenCharType {
+//     // logic
+    
+//     // shift
+//     Colon, // :
+//     SColon, // ;
+//     OParen, // (
+//     CParen, // )
+//     OCurly, // {
+//     CCurly, // }
+//     OBrace, // [
+//     CBrace, // ]
+//     QMrk, // ?
+//     EMrk, // !
+//     Comma, // ,
+//     Period, // .
+//     Lesser, // <
+//     Greater, // >
+//     AtSym, // @
+//     DHypen, // =
+
+//     // bitwise
+//     BitAnd, // &
+//     BitOr, // ^
+//     BitXor, // ^=
+//     BitAss, // &=
+    
+//     // math
+//     _Add, // +
+//     _Sub, // -
+//     _Multiply, // *
+//     _Mod, // %
+//     _Div, // /
+
+//     // misc
+
+// }
+
+// pub enum TokKeyType {
+//     // this will define what types we suport in the language
+//     TokKeyChar, // Char type
+//     TokKeyString, // String type
+//     TokKeyInteger, // Int type
+//     TokKeyFloat, // Float type
+//     // TokKeyFunction
+// }
+
+
+// // what is a token
+// pub struct Tok {
+//     pub _typ: char,
+//     pub tok_size: u32,
+//     pub _data: str,
+// }
+
+
+// #[derive(Debug)]
+// pub struct Lexer 
+// {
+//     pub data_: Vec<char>,
+//     pub cursor: char,
+//     pub f_size: u32,
+//     pub col: i32,
+// }
+
+// impl<'a> Lexer {
+//     // 
+//     pub fn new(data: Vec<char>, curs: char, f_size: u32, col: i32) -> Lexer {
+//         Lexer { data_: data, cursor: curs, f_size: f_size, col: col }
+//     }
+
+//     // this is to fill the data_ field in the lexer struct
+
+//     // move the lex_cursor forward one. This is not to be confused with point_cursor at next char
+//     // this is just moving the col field forward for get next char
+//     pub fn move_cursor(lex: &mut Self) -> i32 {
+    //         lex.col += 1;
+    //         lex.col
+    //     }
+    
+    //     // this can be used for some kind of look ahead in the future
+    //     pub fn get_next_char(lex: &mut Self) -> char {
+//         lex.data_[lex.col as usize]
+//     }
+
+//     // move the curosr the next char ahead.
+//     pub fn point_cursor_at_next_char(lex: &mut Self) {
+    //         let next_char = Lexer::get_next_char(lex);
+    //         lex.cursor = next_char;
+    //     }
+    // }
+    // fn get_int<'a, I>(c: char, iter: &mut Peekable<I>) -> u64
+//     where
+//     I: Iterator<Item = char> 
+// {
+//     // Define something helpful for the user
+//     let err_string = vec!["Not an Int ".to_string(), c.to_string()].join("-");        
+//     // parse u64 from char
+//     let mut int = c.to_string().parse::<u64>().expect(&err_string[..]);
+// }
+
+// ^^ dead code 
+// use std::iter::Peekable;
