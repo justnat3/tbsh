@@ -27,13 +27,14 @@ pub mod parser;
 //         lexer::Lexer::move_cursor(&mut lex);
 //     }
 // }
-use std::env::args;
+// use std::env::args;
 
 fn main() {
-    let args: Vec<String> = args().collect();
-    let file: String = utils::get_lexer_data_buffer(&args[1]);
-    let res = lexer::lex(&file);
-    dbg!(res);
+    // let args: Vec<String> = args().collect();
+    // let file: String = utils::get_lexer_data_buffer(&args[1]);
+    // let res = lexer::lexer::lex(&file);
+    // let parsey = parser::parse(res.into_iter());
+    // dbg!(parsey);
 }
 
 
