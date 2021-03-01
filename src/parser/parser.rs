@@ -1,9 +1,6 @@
 // use crate::lexer::*;
-// pub struct Parser {}
-// pub struct Integer {
-//     val: i64
-// }
 
+// pub struct Parser {}
 
 // pub fn parse<I>(iter: I)
 // where
