@@ -22,19 +22,28 @@ pub struct Expr {
 
 impl Expr {
     pub fn new_from_str(s: &str) -> Self {
-        // get Integer from &str
+        
         let lhs: Integer = Integer::new_from_str(&s, 0);
         let rhs: Integer = Integer::new_from_str(&s, 2);
 
         let get_operator = &s.chars().skip(1).next().expect("Could not get operator");
         let op = Tkn::new(&get_operator.to_string());
 
-        // we just wanted to get the operator damnit rust
-        // let get_operator: &u8 = &s.as_bytes()[1];
-        // let chard_operator: char = *get_operator as char;
-        // let op: Tkn = Tkn::new(&chard_operator.to_string());
-
         Expr { lhs, rhs, op }
+
+    }
+
+    pub fn extract_whitespace(s: &str) -> Self {
+        
+        let extracted = s
+        .char_indices()
+        .find_map(|(idx, chr)| if accept(chr) {None} else {Some(idx))
+        .unwrap_or_else(|| s.len());
+
+        let extract = &s[..extracted];
+        let end = &s[extracted..];
+        (end, extract)
+    
     }
 
     pub fn new(lhs: u8, rhs: u8, op: Tkn) -> Self {

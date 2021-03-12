@@ -50,7 +50,7 @@ impl Integer {
         let int: u8 = c.to_string().parse::<u8>().expect("Did not match u8 spec");
         Integer {
             kind: Tkn::Int(c),
-            int: int,
+            int,
         }
     }
 
@@ -67,7 +67,7 @@ impl Integer {
         let get_char: char = s.chars().nth(inx).unwrap();
         Integer {
             kind: Tkn::Int(get_char),
-            int: int,
+            int,
         }
     }
     /// The Tkn enum in this case Tkn::Int(_) can hold a single value representing what char->Int it
@@ -216,6 +216,7 @@ mod tests {
     fn expr_parse_whitespace() {
         let the_string: String = String::from("1 + 1");
         let lexed = Expr::new_from_str(&the_string);
+        
         let match_ = Expr {
             lhs: Integer {
                 kind: Tkn::Int('1'),
