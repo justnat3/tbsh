@@ -8,7 +8,7 @@ fn main(){
     loop {
         // use the `>` character as the prompt
         // need to explicitly flush this to ensure it prints before read_line
-        print!("#REEEEE>? ");
+        print!("# ");
         stdout().flush().unwrap();
 
         let mut input = String::new();
