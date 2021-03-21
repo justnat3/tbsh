@@ -44,8 +44,8 @@ impl Integer {
     }
     ///we create our own function for char conversion because we want to return the struct for readablity
     pub fn new_from_char(c: char) -> Self {
-        // parse a u8 from the string from string
-        // alert user if char did not parse to u8 correctly
+        // lex a u8 from the string from string
+        // alert user if char did not lex to u8 correctly
         let int: u8 = c.to_string().parse::<u8>().expect("Did not match u8 spec");
         Integer {
             kind: Tkn::Int(c.to_string()),
@@ -86,7 +86,7 @@ impl Integer {
     }
 }
 
-/// Tkn is the base of lexer/parser here
+/// Tkn is the base of lexer/lexr here
 #[derive(Debug, PartialEq)]
 pub enum Tkn {
     Int(String),  // please use the Integer struct for this. Tkn is just a kind
@@ -124,46 +124,51 @@ pub enum Tkn {
     Question,
     SingleQuote,
     DoubleQuote,
-    LeftBracket,
-    RightBracket,
     LeftCurly,
     RightCurly,
 }
 
-impl Tkn {
-    pub fn new_from_char(val: char) -> Self {
-        match val {
-            '0'..='9' => Self::Int(val.to_string()),
-            '=' => Self::Equals,
-            '+' => Self::Plus,
-            '-' => Self::Minus,
-            '_' => Self::UnderScore,
-            ')' => Self::RParen,
-            '(' => Self::LParen,
-            '*' => Self::Star,
-            '&' => Self::Ampersand,
-            '^' => Self::Carot,
-            '%' => Self::Mod,
-            '$' => Self::Dollar,
-            '#' => Self::Comment,
-            '@' => Self::At_,
-            '!' => Self::Exclamation,
-            '<' => Self::GreaterThan,
-            '>' => Self::LessThan,
-            '|' => Self::Pipe,
-            '\\' => Self::Escape,
-            '/' => Self::Div,
-            '.' => Self::Period,
-            ',' => Self::Comma,
-            '?' => Self::Question,
-            '\'' => Self::SingleQuote,
-            '\"' => Self::DoubleQuote,
-            ']' => Self::RightBracket,
-            '[' => Self::LeftBracket,
-            '{' => Self::RightCurly,
-            '}' => Self::LeftCurly,
-            _ => Self::Char(val),
-        }
+impl<'tkn> Tkn {
+    pub fn into_str(&'tkn self) -> std::borrow::Cow<'tkn, str>{
+        match self {
+           Self::Int(s) => s.as_ref(),
+           Self::Char(c) => return c.to_string().into(),
+           Self::Whitespace => " ",
+           Self::Plus => "+",
+           Self::Minus => "-",
+           Self::Star => "*",
+           Self::Equals => "=",
+           Self::LParen => "(",
+           Self::RParen => ")",
+           Self::LBrace => "[",
+           Self::RBrace => "]",
+           Self::Comment => "#",
+           Self::UnderScore => "_",
+           Self::Ampersand => "&",
+           Self::Carot => "^",
+           Self::Mod => "%",
+           Self::Dollar => "$",
+           Self::At_ => "@",
+           Self::Exclamation => "!",
+           Self::NotEqual => "!=",
+           Self::Increment => "++",
+           Self::Decrement => "--",
+           Self::MinusEqual => "-=",
+           Self::ShiftLeft => "<<",
+           Self::ShiftRight => ">>",
+           Self::LessThan => ">",
+           Self::GreaterThan => "<",
+           Self::Pipe => "|",
+           Self::Escape => "\\",
+           Self::Div => "/",
+           Self::Period => ".",
+           Self::Comma => ",",
+           Self::Question => "?",
+           Self::SingleQuote => "'",
+           Self::DoubleQuote => "\"",
+           Self::LeftCurly => "{",
+           Self::RightCurly => "}",
+        }.into()
     }
 
     pub fn new(val: &str) -> Self {
@@ -196,8 +201,6 @@ impl Tkn {
                 '?' => Self::Question,
                 '\'' => Self::SingleQuote,
                 '\"' => Self::DoubleQuote,
-                ']' => Self::RightBracket,
-                '[' => Self::LeftBracket,
                 '{' => Self::RightCurly,
                 '}' => Self::LeftCurly,
                 _ => Self::Char(val),
@@ -221,7 +224,7 @@ mod tests {
     use crate::lexer::Integer;
     use crate::lexer::Tkn;
     #[test]
-    fn expr_parse() {
+    fn expr_lex() {
         let the_string: String = String::from("1+1");
         let lexed = Expr::new_from_str(&the_string);
         let match_ = Expr {
@@ -241,7 +244,7 @@ mod tests {
 
     #[test]
     //#[ignore]
-    fn expr_parse_whitespace() {
+    fn expr_lex_whitespace() {
         let the_string: String = String::from("1 + 1");
         let lexed = Expr::new_from_str(&the_string);
         // return char to get rid of new_from_str
@@ -260,9 +263,31 @@ mod tests {
         assert_eq!(lexed, match_);
     }
 
+    #[test]
+    //#[ignore]
+    fn expr_lex_whitespace_extra_whitespace() {
+        let the_string: String = String::from("100      /   58");
+        let lexed = Expr::new_from_str(&the_string);
+        // return char to get rid of new_from_str
+
+        let match_ = Expr {
+            lhs: Integer {
+                kind: Tkn::Int("100".to_string()),
+                int: 100,
+            },
+            rhs: Integer {
+                kind: Tkn::Int("58".to_string()),
+                int: 58,
+            },
+            op: Tkn::Div,
+        };
+        assert_eq!(lexed, match_);
+    }
+
+
 
     #[test]
-    fn expr_parse_whitespace_multichar_int() {
+    fn expr_lex_whitespace_multichar_int() {
         let the_string: String = String::from("122 + 12");
         let lexed = Expr::new_from_str(&the_string);
         // return char to get rid of new_from_str
@@ -282,37 +307,37 @@ mod tests {
     }
 
     #[test]
-    fn parse_plus() {
+    fn lex_plus() {
         assert_eq!(Tkn::Plus, Tkn::new("+"));
     }
 
     #[test]
-    fn parse_mod() {
+    fn lex_mod() {
         assert_eq!(Tkn::Mod, Tkn::new("%"));
     }
 
     #[test]
-    fn parse_star() {
+    fn lex_star() {
         assert_eq!(Tkn::Star, Tkn::new("*"));
     }
 
     #[test]
-    fn parse_int() {
+    fn lex_int() {
         assert_eq!(Tkn::Int("2".to_string()), Tkn::new("2"));
     }
 
     #[test]
-    fn parse_char() {
+    fn lex_char() {
         assert_eq!(Tkn::Char('a'), Tkn::new("a"));
     }
 
     #[test]
-    fn parse_div() {
+    fn lex_div() {
         assert_eq!(Tkn::Div, Tkn::new("/"));
     }
 
     #[test]
-    fn parse_comment() {
+    fn lex_comment() {
         assert_eq!(Tkn::Comment, Tkn::new("#"));
     }
 

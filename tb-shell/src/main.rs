@@ -13,7 +13,6 @@ fn main(){
 
         let mut input = String::new();
         stdin().read_line(&mut input).unwrap();
-        if input == "\n" { println!("\n"); }
         // read_line leaves a trailing newline, which trim removes
         // this needs to be peekable so we can determine when we are on the last command
         let mut commands = input.trim().split(" | ").peekable();

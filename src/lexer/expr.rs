@@ -2,7 +2,7 @@ use crate::lexer::Integer;
 use crate::lexer::Tkn;
 
 /// Exprs
-///
+///-
 /// We are just defining what exactly an Expr is going to look like. We can define the Expr in a couple of ways.
 /// Expr also implements some nice creature comforts for the compiler
 /// ```
@@ -15,7 +15,6 @@ use crate::lexer::Tkn;
 ///```
 #[derive(Debug, PartialEq)]
 pub struct Expr {
-    // expects a char
     pub lhs: Integer,
     pub rhs: Integer,
     pub op: Tkn, // this will only work with certain enum fields
@@ -23,35 +22,25 @@ pub struct Expr {
 
 impl Expr {
     pub fn new_from_str(s: &str) -> Self {
+        // get index of operator in expression
+        let ops: [char; 4] = ['+','-','/','*'];
+        let op = s.chars().find(|x| ops.contains(x));
 
-        let _extracted: String  = Expr::extract_whitespace(&s);
-        let new_str = _extracted.to_owned();
-        println!("new_str->{:?}", new_str);
-        let split_on_op = new_str.split("+").collect::<Vec<&str>>();
-        println!("split_on_op_vec->{:?}", split_on_op);
+        // Grab and parse the operator into a token
+        let op = Tkn::new(&op.expect(&format!("Expected Operator: Valid Operators -> {:?}", ops)).to_string());
+
+        // get all the whitespace out of the expression
+        let _extracted: String  = Expr::extract_whitespace(&s).to_owned();
+
+        // get right-side, and the left-side then stick it in a vec<&str>
+        let split_on_op = _extracted.split(&op.into_str().into_owned()).collect::<Vec<&str>>();
+
+        // Take both sides and put then into the integer strcut
+        dbg!(&_extracted);
         let lhs: Integer = Integer::new_from_str(&split_on_op[0]);
         let rhs: Integer = Integer::new_from_str(&split_on_op[1]);
-        // '1 + 1'
-        // should extract white space here because this function is expecting 
-        // '1+1'
 
-        //let get_operator = &new_str.chars().next().expect("Could not get operator");
-        //let op = Tkn::new(&get_operator.to_string());
-        //let op_str = &new_str.chars().position(|c| c == '+').unwrap().to_string();
-        //assert_eq!(op_str, "+");
-        
-        let plus_index = s.to_string().find("+");
-        let op_str: String = s.to_string()
-            .chars()
-            .skip(plus_index.unwrap() as usize)
-            .take(1)
-            .collect();
-
-        let op = Tkn::new(&op_str.to_owned());
-        println!("operator->{:?}", op);
-        println!("operator->{:?}", op_str);
         Expr { lhs, rhs, op }
-
     }
 
     pub fn extract_whitespace(s: &str) -> String {
