@@ -1,5 +1,5 @@
 #[warn(unused_doc_comments)]
-
+#[allow(unused_macros)]
 // Contribution of NYX
 macro_rules! crash {
     ($var:expr, $($fmt:tt)*) => {
@@ -37,9 +37,8 @@ impl Integer {
         // this is not entirely safe, as std::char::from_u32 would be prefered
         // previously the tests failed because first expr->kind == '\u{2}'
         let char_ = std::char::from_digit(val.into(), 10);
-
         Integer {
-            kind: Tkn::Int(crash!(char_, "Invalid kind in Integer Struct {:?}")),
+            kind: Tkn::Int(char_.unwrap().to_string()),
             int: val,
         }
     }
@@ -49,34 +48,22 @@ impl Integer {
         // alert user if char did not parse to u8 correctly
         let int: u8 = c.to_string().parse::<u8>().expect("Did not match u8 spec");
         Integer {
-            kind: Tkn::Int(c),
+            kind: Tkn::Int(c.to_string()),
             int,
         }
     }
 
-    pub fn new_from_str(s: &str, inx: usize) -> Self {
-        //  another thing we can do is split on the Whitespace token
-        //  this is so that when we have multichar ints we can capture and parse
-        //  the entire fucking int
-        //
-        // this is reading the entire string index is not specified
-       
+    pub fn new_from_str(s: &str) -> Self {
+        // this function is now fed a string_slice that represent a integer
 
-        println!("parsed: ");
-        let ch = s.chars().nth(inx).unwrap();
-
-        //let int: u8 = s.to_string().as_bytes()[inx];
-        //let conv = int as char;
-        println!("{:?}", ch);
-        let int = ch 
+        let int = s 
             .to_string()
             .parse::<u8>()
             .expect("did not match u8 spec");
 
         println!("{}", int);
-        let get_char: char = s.chars().nth(inx).unwrap();
         Integer {
-            kind: Tkn::Int(get_char),
+            kind: Tkn::Int(s.to_string()),
             int,
         }
     }
@@ -102,7 +89,7 @@ impl Integer {
 /// Tkn is the base of lexer/parser here
 #[derive(Debug, PartialEq)]
 pub enum Tkn {
-    Int(char),  // please use the Integer struct for this. Tkn is just a kind
+    Int(String),  // please use the Integer struct for this. Tkn is just a kind
     Char(char), // please use the Char struct for this. Tkn is just a kind
     Whitespace,
     Plus,
@@ -146,7 +133,7 @@ pub enum Tkn {
 impl Tkn {
     pub fn new_from_char(val: char) -> Self {
         match val {
-            '0'..='9' => Self::Int(val),
+            '0'..='9' => Self::Int(val.to_string()),
             '=' => Self::Equals,
             '+' => Self::Plus,
             '-' => Self::Minus,
@@ -184,7 +171,7 @@ impl Tkn {
             let val = val.chars().next().unwrap();
             match val {
                 // Integer::new_from_char(val, Tkn::Int) later on
-                '0'..='9' => Self::Int(val),
+                '0'..='9' => Self::Int(val.to_string()),
                 '=' => Self::Equals,
                 '+' => Self::Plus,
                 '-' => Self::Minus,
@@ -239,11 +226,11 @@ mod tests {
         let lexed = Expr::new_from_str(&the_string);
         let match_ = Expr {
             lhs: Integer {
-                kind: Tkn::Int('1'),
+                kind: Tkn::Int("1".to_string()),
                 int: 1,
             },
             rhs: Integer {
-                kind: Tkn::Int('1'),
+                kind: Tkn::Int("1".to_string()),
                 int: 1,
             },
             op: Tkn::Plus,
@@ -261,12 +248,33 @@ mod tests {
 
         let match_ = Expr {
             lhs: Integer {
-                kind: Tkn::Int('1'),
+                kind: Tkn::Int("1".to_string()),
                 int: 1,
             },
             rhs: Integer {
-                kind: Tkn::Int('1'),
+                kind: Tkn::Int("1".to_string()),
                 int: 1,
+            },
+            op: Tkn::Plus,
+        };
+        assert_eq!(lexed, match_);
+    }
+
+
+    #[test]
+    fn expr_parse_whitespace_multichar_int() {
+        let the_string: String = String::from("122 + 12");
+        let lexed = Expr::new_from_str(&the_string);
+        // return char to get rid of new_from_str
+
+        let match_ = Expr {
+            lhs: Integer {
+                kind: Tkn::Int("122".to_string()),
+                int: 122,
+            },
+            rhs: Integer {
+                kind: Tkn::Int("12".to_string()),
+                int: 12,
             },
             op: Tkn::Plus,
         };
@@ -290,7 +298,7 @@ mod tests {
 
     #[test]
     fn parse_int() {
-        assert_eq!(Tkn::Int('2'), Tkn::new("2"));
+        assert_eq!(Tkn::Int("2".to_string()), Tkn::new("2"));
     }
 
     #[test]

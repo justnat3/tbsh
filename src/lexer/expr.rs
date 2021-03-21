@@ -25,18 +25,31 @@ impl Expr {
     pub fn new_from_str(s: &str) -> Self {
 
         let _extracted: String  = Expr::extract_whitespace(&s);
-
         let new_str = _extracted.to_owned();
-        println!("{:?}", new_str);
-        let lhs: Integer = Integer::new_from_str(&new_str, 0);
+        println!("new_str->{:?}", new_str);
+        let split_on_op = new_str.split("+").collect::<Vec<&str>>();
+        println!("split_on_op_vec->{:?}", split_on_op);
+        let lhs: Integer = Integer::new_from_str(&split_on_op[0]);
+        let rhs: Integer = Integer::new_from_str(&split_on_op[1]);
         // '1 + 1'
         // should extract white space here because this function is expecting 
         // '1+1'
-        let rhs: Integer = Integer::new_from_str(&new_str, 2);
 
-        let get_operator = &new_str.chars().skip(1).next().expect("Could not get operator");
-        let op = Tkn::new(&get_operator.to_string());
+        //let get_operator = &new_str.chars().next().expect("Could not get operator");
+        //let op = Tkn::new(&get_operator.to_string());
+        //let op_str = &new_str.chars().position(|c| c == '+').unwrap().to_string();
+        //assert_eq!(op_str, "+");
+        
+        let plus_index = s.to_string().find("+");
+        let op_str: String = s.to_string()
+            .chars()
+            .skip(plus_index.unwrap() as usize)
+            .take(1)
+            .collect();
 
+        let op = Tkn::new(&op_str.to_owned());
+        println!("operator->{:?}", op);
+        println!("operator->{:?}", op_str);
         Expr { lhs, rhs, op }
 
     }
