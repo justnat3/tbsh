@@ -1,2 +1,2 @@
-mod lexer;
-use crate::lexer::*;
+mod tokenize;
+use crate::lexer::tokenize::*;
