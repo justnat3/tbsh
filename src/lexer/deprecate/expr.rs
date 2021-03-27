@@ -1,5 +1,6 @@
 use crate::lexer::Integer;
 use crate::lexer::Tkn;
+use crate::lexer::utils;
 
 /// Exprs
 ///-
@@ -21,6 +22,7 @@ pub struct Expr {
 }
 
 impl Expr {
+    /// This will get the expression in a &str regardless of whitespace and operator
     pub fn new_from_str(s: &str) -> Self {
         // get index of operator in expression
         let ops: [char; 4] = ['+','-','/','*'];
@@ -30,27 +32,16 @@ impl Expr {
         let op = Tkn::new(&op.expect(&format!("Expected Operator: Valid Operators -> {:?}", ops)).to_string());
 
         // get all the whitespace out of the expression
-        let _extracted: String  = Expr::extract_whitespace(&s).to_owned();
+        let _extracted: String  = utils::extract_whitespace(&s).to_owned();
 
         // get right-side, and the left-side then stick it in a vec<&str>
-        let split_on_op = _extracted.split(&op.into_str().into_owned()).collect::<Vec<&str>>();
+        let split_on_op: Vec<&str> = _extracted.split::<_>(&op.into_str().into_owned()).collect::<Vec<&str>>();
 
         // Take both sides and put then into the integer strcut
-        dbg!(&_extracted);
-        let lhs: Integer = Integer::new_from_str(&split_on_op[0]);
-        let rhs: Integer = Integer::new_from_str(&split_on_op[1]);
+        let lhs = Integer::new_from_str(&split_on_op[0]);
+        let rhs = Integer::new_from_str(&split_on_op[1]);
 
         Expr { lhs, rhs, op }
-    }
-
-    pub fn extract_whitespace(s: &str) -> String {
-        if !s.to_string().contains(char::is_whitespace) {
-            return s.to_string();
-        }
-        let results = s.split_whitespace().collect::<String>();
-        // we return a String because we do not want to return a reference
-        // the ref data is owned by the function
-        results
     }
 
     pub fn new(lhs: u8, rhs: u8, op: Tkn) -> Self {

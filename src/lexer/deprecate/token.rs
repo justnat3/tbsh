@@ -46,7 +46,7 @@ impl Integer {
     pub fn new_from_char(c: char) -> Self {
         // lex a u8 from the string from string
         // alert user if char did not lex to u8 correctly
-        let int: u8 = c.to_string().parse::<u8>().expect("Did not match u8 spec");
+        let int: u8 = c.to_string().parse::<u8>().expect("lexer::Integer::new_from_char->Did not match u8 spec");
         Integer {
             kind: Tkn::Int(c.to_string()),
             int,
@@ -55,18 +55,17 @@ impl Integer {
 
     pub fn new_from_str(s: &str) -> Self {
         // this function is now fed a string_slice that represent a integer
-
-        let int = s 
+        let int = s
             .to_string()
             .parse::<u8>()
-            .expect("did not match u8 spec");
+            .expect("lexer::Integer::new_from_str->did not match u8 spec");
 
-        println!("{}", int);
         Integer {
             kind: Tkn::Int(s.to_string()),
             int,
         }
     }
+
     /// The Tkn enum in this case Tkn::Int(_) can hold a single value representing what char->Int it
     /// infact is so we return a struct for integer based on the int value in the Tkn
     pub fn from_tkn(tkn: Tkn) -> Self {
@@ -78,7 +77,7 @@ impl Integer {
                     .expect("Did not match u8 spec");
                 Integer {
                     kind: Tkn::Int(val),
-                    int: int,
+                    int,
                 }
             }
             _ => panic!("NOT A TKN::INT"),
@@ -223,6 +222,7 @@ mod tests {
     use crate::lexer::expr::Expr;
     use crate::lexer::Integer;
     use crate::lexer::Tkn;
+    use crate::lexer::VariableDef;
     #[test]
     fn expr_lex() {
         let the_string: String = String::from("1+1");
@@ -304,6 +304,28 @@ mod tests {
             op: Tkn::Plus,
         };
         assert_eq!(lexed, match_);
+    }
+
+
+    #[test]
+    fn lex_variable_def() {
+        let the_string: String = String::from("122 + 12");
+        let lexed = Expr::new_from_str(&the_string);
+        VariableDef {
+            name: r#"a"#.to_string(),
+            val: Expr {
+                lhs: Integer {
+                    kind: Tkn::Int("122".to_string()),
+                    int: 122,
+                },
+                rhs: Integer {
+                    kind: Tkn::Int("12".to_string()),
+                    int: 12,
+                },
+                op: Tkn::Plus,
+            assert_eq!(lexed, match_),
+            }
+        }
     }
 
     #[test]
