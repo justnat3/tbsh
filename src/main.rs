@@ -1,5 +1,3 @@
-pub mod lexer;
+mod lexer;
 
-fn main() {
-    lexer::lex();
-}
+fn main() {}
