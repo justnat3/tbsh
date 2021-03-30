@@ -13,22 +13,6 @@
     This is really early in development I do not work on this really often. 
     Right now we are currently writing the lexing and parsing process for the lanauage
 
-## Simple expression coming out of the lexer.
-```
-[src\main.rs:36] res = Ok(
-    [
-        Int(
-            1,
-        ),
-        Whitespace,
-        Plus(
-            '+',
-        ),
-        Whitespace,
-        Int(
-            1,
-        ),
-    ],
-)
-```
+## Where can I see the progress for this project?
+    for now you can look at CHANGELOG.md
 
