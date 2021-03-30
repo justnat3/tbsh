@@ -10,8 +10,10 @@
 
 ## Where is this in development?
 
-    This is really early in development I do not work on this really often. 
+    This is really early in development I do not work on this super often. 
     Right now we are currently writing the lexing and parsing process for the lanauage
+    This will likely be slow at the being as I am learning about the processes that go into make a language
+    A lot of things are up for change.
 
 ## Where can I see the progress for this project?
     for now you can look at CHANGELOG.md
